@@ -1,6 +1,14 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
+
+
+def is_positive(value):
+  if value <= 0:
+    raise ValidationError("Amount has to be greater than 0")
+  
 
 class Transaction(models.Model):
     source = models.ForeignKey(User, 
@@ -13,12 +21,16 @@ class Transaction(models.Model):
         related_query_name="incoming_transaction",
         on_delete=models.PROTECT
     )
-    amount = models.IntegerField()
+    amount = models.PositiveIntegerField(validators=[is_positive])
+
+
+    @staticmethod
+    def for_user(user):
+        return Transaction.objects.filter(
+            Q(source=user) | Q(destination=user)
+        )
 
     def __str__(self):
       return (f'Source: {self.source}, Destination: {self.destination}, Amount: {self.amount}')
 
-class Balance(models.Model):
-  total = models.IntegerField(default=0)
-  user = models.ForeignKey(User, on_delete=models.PROTECT)
 

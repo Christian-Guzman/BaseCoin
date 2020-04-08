@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from app.views import TransactionViewSet, UserViewSet, BalanceViewSet 
+from app.views import TransactionViewSet, UserViewSet 
 from rest_framework import routers
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -9,7 +9,6 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register('users', UserViewSet, 'user')
 router.register('transactions', TransactionViewSet, 'transaction')
-router.register('balances', BalanceViewSet, 'balance')
 
 
 urlpatterns = [
