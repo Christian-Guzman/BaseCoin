@@ -1,23 +1,18 @@
-from .models import Transaction
+from .models import Transaction, get_user_balance
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Transaction
-    fields = ['source', 'destination', 'amount']
-
-    def get_balance(self, user):
-        balance = 0
-        for t in Transaction.for_user(user):
-            if t.source == user:
-                balance -= t.amount
-            else:
-                balance += t.amount
-        return balance
+    class Meta:
+        model = Transaction
+        fields = ['source', 'destination', 'amount']
         
-
+    def validate(self, data):
+        if data['amount'] > get_user_balance(data['source']):
+            raise serializers.ValidationError("Insufficient Funds")
+        return super().validate(data) 
+    
         
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,10 +24,4 @@ class UserSerializer(serializers.ModelSerializer):
     
 
     def get_balance(self, user):
-        balance = 0
-        for t in Transaction.for_user(user):
-            if t.source == user:
-                balance -= t.amount
-            else:
-                balance += t.amount
-        return balance
+        return get_user_balance(user)
