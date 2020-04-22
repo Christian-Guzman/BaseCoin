@@ -36,7 +36,7 @@ class Transaction(models.Model):
       balance = get_user_balance(self.request.user)
       if self.amount > balance:
         raise ValidationError("Insufficient Funds")
-      
+
     @staticmethod
     def for_user(user):
         return Transaction.objects.filter(
@@ -45,3 +45,4 @@ class Transaction(models.Model):
 
     def __str__(self):
       return (f'Source: {self.source}, Destination: {self.destination}, Amount: {self.amount}')
+    

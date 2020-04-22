@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from app.views import TransactionViewSet, UserViewSet 
+from app.views import TransactionViewSet, UserViewSet
 from rest_framework import routers
 
 # Routers provide an easy way of automatically determining the URL conf.
